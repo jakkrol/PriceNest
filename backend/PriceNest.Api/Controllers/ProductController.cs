@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PriceNest.Api.Models;
 
 namespace PriceNest.Api.Controllers;
 
@@ -12,6 +13,14 @@ public class ProductController : ControllerBase
     {
         _dbContext = dbContext;
     }
+
+    [HttpGet]
+    public ActionResult<Product> GetProduct()
+    {
+        return new Product { Name = "test" };
+    }
+
+    
 }
 
     
