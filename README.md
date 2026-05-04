@@ -1,4 +1,4 @@
-# 🦅 PriceNest
+# PriceNest
 
 **PriceNest** is an intelligent price tracking and analytics system designed to monitor product price changes across various e-commerce platforms. The project is currently **in active development**, focusing on building a robust microservice architecture.
 
