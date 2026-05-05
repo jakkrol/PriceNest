@@ -5,14 +5,15 @@ namespace PriceNest.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PriceHistoryController : ControllerBase
+
+public class UserProductController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
 
-    public PriceHistoryController(AppDbContext dbContext)
+    public UserProductController(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    
+
 }

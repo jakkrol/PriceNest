@@ -15,9 +15,10 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<Product> GetProduct()
+    public async Task<ActionResult<Product>> GetProduct()
     {
-        return new Product { Name = "test" };
+        var product = new Product { Name = "test" };
+        return Ok(product);
     }
 
     

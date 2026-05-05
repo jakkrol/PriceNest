@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddOpenApi();
+builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"))
 );
@@ -15,7 +15,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    //app.MapOpenApi();
+    app.MapOpenApi();
     app.MapScalarApiReference();
 }
 
@@ -29,10 +29,10 @@ app.MapGet("/test", () => {
     return new { message = "Testowy endpoint", status = "OK", value = 200 };
 });
 
-app.MapGet("/product", (Product product) =>
-{
-    product.LastUpdated = DateTime.Now;
-    return Results.Created("Stworzono", product);
-});
+// app.MapPost("/product", (Product product) =>
+// {
+//     product.LastUpdated = DateTime.Now;
+//     return Results.Created("Stworzono", product);
+// });
 
 app.Run();

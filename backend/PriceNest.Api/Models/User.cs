@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace PriceNest.Api.Models;
 
 public class User
