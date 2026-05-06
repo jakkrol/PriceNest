@@ -1,15 +1,15 @@
 import { chromium } from "playwright";
 
 export default async function scrapeCeneo(productName: string) {
-    const browser = await chromium.launch({headless: false});
+    const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({
         userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     });
     const page = await context.newPage();
 
-    try{
+    try {
         console.log(`Scraping Ceneo for product: ${productName}`);
-        await page.goto(`https://www.ceneo.pl/;szukaj-${encodeURIComponent(productName)}`);
+        await page.goto(`https://www.ceneo.pl/;szukaj-${encodeURIComponent(productName)}`, { waitUntil: "domcontentloaded" });
 
         const products = await page.$$eval('.cat-prod-row', (items) => {
             return items.map(item => {
@@ -21,11 +21,13 @@ export default async function scrapeCeneo(productName: string) {
 
         console.table(products);
 
+        return products;
+
     } catch (error) {
-        console.error("❌ Awaria układu:", error);
+        console.error("Error occurred:", error);
     } finally {
-        // await browser.close(); // Zakomentuj, żeby widzieć co się stało na stronie
-        console.log("🏁 Pomiar zakończony.");
+        console.log("Success");
+        await browser.close();
     }
 
 
