@@ -16,6 +16,12 @@ public class UserController : ControllerBase
         _dbContext = dbContext;
     }
 
+    [HttpGet("error")]
+    public ActionResult TriggerError()
+    {
+        throw new Exception("Test error");
+    }
+
     [HttpGet]
     public async Task<ActionResult<User>> GetUser(string login)
     {
@@ -32,26 +38,23 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> CreateUser(User user)
     {
-        try
+        var exists = await _dbContext.Users.AnyAsync(u => u.Login == user.Login);
+        if (exists)
         {
-            var exists = await _dbContext.Users.AnyAsync(u => u.Login == user.Login);
-            if (exists)
-            {
-                return Conflict(new { message = "User with this login already exists." });
-            }
+            return Conflict(new { message = "User with this login already exists." });
+        }
 
-            //////////////////////////
-            /// TODO: Add password hashing and validation
-            //////////////////////////
-            
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUser), new { login = user.Login }, user);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = "Unexpected error occurred while creating user.", error = ex.Message});
-        }
+
+        //////////////////////////
+        /// TODO: Add password hashing and validation
+        //////////////////////////
+
+
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync();
+        return CreatedAtAction(nameof(GetUser), new { login = user.Login }, user);
     }
-    
+
+
+
 }

@@ -21,7 +21,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<PriceNest.Api.Middlewares.GlobalExceptionHandlingMiddleware>();
+app.UseAuthentication();
+app.UseAuthorization();
 
+app.MapControllers();
 
 app.MapGet("/", () => "Hello");
 
