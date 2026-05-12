@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using PriceNest.Api.Data;
 using PriceNest.Api.Models;
 using Microsoft.EntityFrameworkCore;
-
 namespace PriceNest.Api.Controllers;
 
 [ApiController]
@@ -16,11 +15,11 @@ public class UserController : ControllerBase
         _dbContext = dbContext;
     }
 
-    [HttpGet("error")]
-    public ActionResult TriggerError()
-    {
-        throw new Exception("Test error");
-    }
+    // [HttpGet("error")]
+    // public ActionResult TriggerError()
+    // {
+    //     throw new Exception("Test error");
+    // }
 
     [HttpGet]
     public async Task<ActionResult<User>> GetUser(string login)
@@ -35,25 +34,28 @@ public class UserController : ControllerBase
 
 
 
-    [HttpPost]
-    public async Task<ActionResult> CreateUser(User user)
-    {
-        var exists = await _dbContext.Users.AnyAsync(u => u.Login == user.Login);
-        if (exists)
-        {
-            return Conflict(new { message = "User with this login already exists." });
-        }
+    // [HttpPost]
+    // public async Task<ActionResult> CreateUser(User user)
+    // {
+    //     var exists = await _dbContext.Users.AnyAsync(u => u.Login == user.Login);
+    //     if (exists)
+    //     {
+    //         return Conflict(new { message = "User with this login already exists." });
+    //     }
 
 
-        //////////////////////////
-        /// TODO: Add password hashing and validation
-        //////////////////////////
+
+    //     string hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
+    //     user.Password = hashedPassword;
+    //     //////////////////////////
+    //     /// TODO: Add password hashing and validation
+    //     //////////////////////////
 
 
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetUser), new { login = user.Login }, user);
-    }
+    //     _dbContext.Users.Add(user);
+    //     await _dbContext.SaveChangesAsync();
+    //     return CreatedAtAction(nameof(GetUser), new { login = user.Login }, user);
+    // }
 
 
 
