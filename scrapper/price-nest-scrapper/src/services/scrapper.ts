@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 
 export default async function scrapeCeneo(productName: string) {
-    const browser = await chromium.launch({ headless: true});
+    const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({
         userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     });
@@ -32,7 +32,7 @@ export default async function scrapeCeneo(productName: string) {
         });
 
         //console.table(products);
-
+        // JSON.stringify(JSON.parse(products))
         return products;
 
     } catch (error) {

@@ -3,6 +3,11 @@ using PriceNest.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PriceNest.Api.DTOs;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+
 
 [ApiController]
 [Route("api/[controller]")]
@@ -16,7 +21,25 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
+    // public string GenerateJwtToken(UserLoginDto user)
+    // {
+    //     var jwtSettings = _configuration.GetSection("JwtSettings");
+    //     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+    //     var claims = new[]
+    //     {
+    //         new Claim(JwtRegisteredClaimNames.Sub, user.Login),
+    //         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    //     };
 
+    //     var token = new JwtSecurityToken(
+    //         issuer: jwtSettings["Issuer"],
+    //         audience: jwtSettings["Audience"],
+    //         claims: claims,
+    //         expires: DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpiryMinutes"]!)),
+    //         signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+    //     );
+    //     return new JwtSecurityTokenHandler().WriteToken(token);
+    // }
 
     // Add JWT token generation and validation here in the future for better authentication management
 
@@ -29,9 +52,30 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid login or password." });
         }
 
+        ///
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Login),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
 
-        return Ok(new { message = "Login successful." });
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpiryMinutes"]!)),
+            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+        );
+        /// 
+        //var token = GenerateJwtToken(user);
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return Ok(new { message = "Login successful.", token = tokenString });
     }
+
+
 
     [HttpPost("register")]
     public async Task<ActionResult> RegisterUser(UserRegisterDto user)

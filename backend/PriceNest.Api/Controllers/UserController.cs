@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using PriceNest.Api.Data;
 using PriceNest.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 namespace PriceNest.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly AppDbContext _dbContext;

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PriceNest.Api.Models;
+using PriceNest.Api.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace PriceNest.Api.Controllers;
 
@@ -15,13 +17,26 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<Product>> GetProduct()
+    public async Task<ActionResult<Product>> GetProduct(int id)
     {
-        var product = new Product { Name = "test" };
+        var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        if (product == null)
+        {
+            return NotFound();
+        }
         return Ok(product);
     }
 
-    
+
+    [HttpPost]
+    public async Task<ActionResult> AddProduct(Product p)
+    {
+        // To modify, maybe add DTO instead of pure object
+        _dbContext.Add(p);
+        await _dbContext.SaveChangesAsync();
+        return Ok();
+    }
+
 }
 
-    
+
