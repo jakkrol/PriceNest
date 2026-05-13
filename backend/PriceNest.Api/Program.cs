@@ -1,8 +1,9 @@
 using Scalar.AspNetCore;
 using PriceNest.Api.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.SemanticKernel;
+using PriceNest.Api.Plugins;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,10 @@ builder.Services.AddDbContext<AppDbContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"))
 );
 builder.Services.AddControllers();
+builder.Services.AddScoped<PriceNest.Api.Services.ProductService>();
+builder.Services.AddScoped<PriceNest.Api.Plugins.ProductPlugin>();
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -32,6 +37,22 @@ builder.Services.AddAuthentication(options =>
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!))
     };
 });
+
+var apiKey = builder.Configuration["OpenAI:ApiKey"];
+builder.Services.AddTransient(sp =>
+{
+    var builder = Kernel.CreateBuilder();
+
+    builder.AddOpenAIChatCompletion(
+        "gpt-4o-mini",
+        apiKey ?? throw new Exception("Key missing")
+        );
+    builder.Plugins.AddFromObject(sp.GetRequiredService<ProductPlugin>());
+
+    return builder.Build();
+});
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
