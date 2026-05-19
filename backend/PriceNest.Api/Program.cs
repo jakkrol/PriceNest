@@ -14,6 +14,12 @@ builder.Services.AddDbContext<AppDbContext>(
 );
 builder.Services.AddControllers();
 builder.Services.AddScoped<PriceNest.Api.Services.ProductService>();
+builder.Services.AddHttpClient<PriceNest.Api.Services.ScraperService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:3000/");
+});
+
+
 builder.Services.AddScoped<PriceNest.Api.Plugins.ProductPlugin>();
 
 

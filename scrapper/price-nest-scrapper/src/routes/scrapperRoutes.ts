@@ -3,7 +3,7 @@ import scrapeCeneo from "../services/scrapper.js";
 
 const router = Router();
 
-router.get("/scrape", async (req: Request, res: Response) => {
+router.post("/scrape", async (req: Request, res: Response) => {
     try {
         const { item } = req.body;
 

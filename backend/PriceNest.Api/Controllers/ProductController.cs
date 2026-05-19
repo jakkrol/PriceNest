@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using PriceNest.Api.Models;
 using PriceNest.Api.DTOs;
 using Microsoft.EntityFrameworkCore;
+using PriceNest.Api.Services;
 
 namespace PriceNest.Api.Controllers;
 
@@ -10,10 +11,11 @@ namespace PriceNest.Api.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly Data.AppDbContext _dbContext;
-
-    public ProductController(Data.AppDbContext dbContext)
+    private readonly ScraperService _scraperService;
+    public ProductController(Data.AppDbContext dbContext, ScraperService scraperService)
     {
         _dbContext = dbContext;
+        _scraperService = scraperService;
     }
 
     [HttpGet]
@@ -35,6 +37,16 @@ public class ProductController : ControllerBase
         _dbContext.Add(p);
         await _dbContext.SaveChangesAsync();
         return Ok();
+    }
+
+
+
+    ///scraping endpoint, to be called by the scrapper service
+    [HttpPost("scrape")]
+    public async Task<ActionResult> ScrapeProduct(string item)
+    {
+        var scrapedJson = await _scraperService.ScrapeData(item);
+        return Ok(scrapedJson);
     }
 
 }

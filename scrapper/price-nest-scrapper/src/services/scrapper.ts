@@ -24,10 +24,15 @@ export default async function scrapeCeneo(productName: string) {
         const products = await page.$$eval('.cat-prod-row__body, .cat-prod-row', (items) => {
             console.log("Founded")
             return items.map(item => {
-                const title = item.querySelector('.cat-prod-row__name, .cat-prod-row__desc')?.textContent?.trim();
+                const rawTitle = item.querySelector('.cat-prod-row__name, .cat-prod-row__desc')?.textContent || "";
                 //const title = item.querySelector('.cat-prod-row__content')?.textContent?.trim();
-                const price = item.querySelector('.price')?.textContent?.trim();
-                return { title, price };
+                const rawPrice = item.querySelector('.price')?.textContent || "";
+                const cleanTitle = rawTitle.replace(/\s+/g, ' ').trim();
+
+                // Dla ceny usuwamy wszystko poza cyframi, przecinkiem i spacją przed walutą
+                const cleanPrice = rawPrice.replace(/\s+/g, ' ').trim();
+
+                return { title: cleanTitle, price: cleanPrice };
             }).filter(p => p.title && p.price);
         });
 
