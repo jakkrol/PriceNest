@@ -41,7 +41,6 @@ public class ProductController : ControllerBase
 
 
 
-    ///scraping endpoint, to be called by the scrapper service
     [HttpPost("scrape")]
     public async Task<ActionResult> ScrapeProduct(string item)
     {

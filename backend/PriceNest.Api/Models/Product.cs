@@ -8,4 +8,5 @@ public class Product
     public string Url { get; set; } = string.Empty;
     public DateTime LastUpdated { get; set; }
     public List<UserProduct> UserProducts { get; set; } = [];
+    public List<PriceHistory> PriceHistories { get; set; } = [];
 }
