@@ -10,18 +10,18 @@ namespace PriceNest.Api.Controllers;
 [Route("api/[controller]")]
 public class ProductController : ControllerBase
 {
-    private readonly Data.AppDbContext _dbContext;
     private readonly ScraperService _scraperService;
-    public ProductController(Data.AppDbContext dbContext, ScraperService scraperService)
+    private readonly ProductService _productService;
+    public ProductController(ScraperService scraperService, ProductService productService)
     {
-        _dbContext = dbContext;
         _scraperService = scraperService;
+        _productService = productService;
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
-        var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        var product = await _productService.GetProductByIdAsync(id);
         if (product == null)
         {
             return NotFound();
@@ -34,8 +34,11 @@ public class ProductController : ControllerBase
     public async Task<ActionResult> AddProduct(Product p)
     {
         // To modify, maybe add DTO instead of pure object
-        _dbContext.Add(p);
-        await _dbContext.SaveChangesAsync();
+        var result = await _productService.AddProductAsync(p);
+        if (!result)
+        {
+            return BadRequest();
+        }
         return Ok();
     }
 

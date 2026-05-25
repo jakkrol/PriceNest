@@ -73,22 +73,13 @@ public class AuthController : ControllerBase
         {
             return BadRequest(new { message = "Login, password and email are required." });
         }
-        // var exists = await _dbContext.Users.AnyAsync(u => u.Login == user.Login);
-        // if (exists)
-        // {
-        //     return Conflict(new { message = "User with this login already exists." });
-        // }
 
-        // string hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
-        // var newUser = new User
-        // {
-        //     Login = user.Login,
-        //     Password = hashedPassword,
-        //     Email = user.Email
-        // };
+        var res = await _authService.RegisterUserAsync(user);
+        if (!res)
+        {
+            return Conflict(new { message = "User with this login already exists." });
+        }
 
-        // _dbContext.Users.Add(newUser);
-        // await _dbContext.SaveChangesAsync();
         return Ok(new { message = "User created successfully." });
     }
 }
