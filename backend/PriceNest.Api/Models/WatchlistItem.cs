@@ -1,6 +1,6 @@
 namespace PriceNest.Api.Models;
 
-public class UserProduct
+public class WatchlistItem
 {
     public int Id { get; set; }
     public int UserId { get; set; }

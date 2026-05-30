@@ -24,28 +24,6 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    // public string GenerateJwtToken(UserLoginDto user)
-    // {
-    //     var jwtSettings = _configuration.GetSection("JwtSettings");
-    //     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
-    //     var claims = new[]
-    //     {
-    //         new Claim(JwtRegisteredClaimNames.Sub, user.Login),
-    //         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-    //     };
-
-    //     var token = new JwtSecurityToken(
-    //         issuer: jwtSettings["Issuer"],
-    //         audience: jwtSettings["Audience"],
-    //         claims: claims,
-    //         expires: DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpiryMinutes"]!)),
-    //         signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
-    //     );
-    //     return new JwtSecurityTokenHandler().WriteToken(token);
-    // }
-
-    // Add JWT token generation and validation here in the future for better authentication management
-
     [HttpPost("login")]
     public async Task<ActionResult> LoginUser(UserLoginDto user)
     {

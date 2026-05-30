@@ -9,5 +9,5 @@ public class User
     public string Password { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 
-    // public List<UserProduct> ObservedProducts { get; set; } = [];
+    public List<WatchlistItem> WatchlistItems { get; set; } = [];
 }
