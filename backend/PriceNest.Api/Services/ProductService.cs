@@ -25,6 +25,12 @@ public class ProductService
         return await _dbContext.Products.FirstOrDefaultAsync(p => p.Name == name);
     }
 
+    // Getting all products
+    public async Task<List<Product>> GetAllProductsAsync()
+    {
+        return await _dbContext.Products.ToListAsync();
+    }
+
     // Adding a new product, returns false if product with same id already exists
     public async Task<bool> AddProductAsync(Product product)
     {
@@ -37,12 +43,6 @@ public class ProductService
         AddHistoryEntry(product.Id, product.Price);
         await _dbContext.SaveChangesAsync();
         return true;
-    }
-
-    // Getting all products
-    public async Task<List<Product>> GetAllProductsAsync()
-    {
-        return await _dbContext.Products.ToListAsync();
     }
 
     // Deleting a product by id
