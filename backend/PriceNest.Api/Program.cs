@@ -14,9 +14,23 @@ builder.Services.AddDbContext<AppDbContext>(
 );
 builder.Services.AddControllers();
 builder.Services.AddScoped<PriceNest.Api.Services.ProductService>();
+builder.Services.AddScoped<PriceNest.Api.Services.WatchListService>();
+builder.Services.AddScoped<PriceNest.Api.Services.AuthService>();
+builder.Services.AddScoped<PriceNest.Api.Services.UserService>();
+
 builder.Services.AddHttpClient<PriceNest.Api.Services.ScraperService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:3000/");
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
 });
 
 
@@ -68,6 +82,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//CORS
+app.UseCors();
 
 app.UseMiddleware<PriceNest.Api.Middlewares.GlobalExceptionHandlingMiddleware>();
 app.UseAuthentication();

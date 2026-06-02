@@ -11,9 +11,9 @@ export function ThemeToggle() {
         setMounted(true);
     }, []);
 
-    useEffect(() => {
-        console.log("test")
-    }, [theme])
+    // useEffect(() => {
+    //     console.log("test")
+    // }, [theme])
 
     if (!mounted) return <div className='p-9 m-9'></div>
 
