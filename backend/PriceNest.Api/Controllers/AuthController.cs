@@ -39,7 +39,17 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid login or password." });
         }
 
-        return Ok(new { message = "Login successful.", token = token });
+        var cookiesOptions = new CookieOptions
+        {
+            HttpOnly = true, // Kluczowe dla bezpieczeństwa! Skrypty JS (XSS) nie mają dostępu do tego ciastka.
+            Secure = false,   // Wymagane, jeśli SameSite = None. Wymusza przesyłanie po HTTPS (lub localhost).
+            SameSite = SameSiteMode.Lax, // Pozwala na przesyłanie ciastka cross-origin (z portu 5295 do 3000)
+            Expires = DateTime.UtcNow.AddDays(7) // Ważność ciastka (np. 7 dni)
+        };
+
+        Response.Cookies.Append("token", token, cookiesOptions);
+
+        return Ok(new { message = "Login successful." });
     }
 
 

@@ -20,16 +20,17 @@ builder.Services.AddScoped<PriceNest.Api.Services.UserService>();
 
 builder.Services.AddHttpClient<PriceNest.Api.Services.ScraperService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:3000/");
+    client.BaseAddress = new Uri("http://localhost:4000/");
 });
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:3000").AllowCredentials()
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
 
@@ -56,6 +57,17 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!))
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            if (context.Request.Cookies.TryGetValue("token", out string? token))
+            {
+                context.Token = token; 
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 var apiKey = builder.Configuration["OpenAI:ApiKey"];
@@ -78,7 +90,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(options => 
+    {
+        options.Authentication = null; 
+    });
 }
 
 app.UseHttpsRedirection();

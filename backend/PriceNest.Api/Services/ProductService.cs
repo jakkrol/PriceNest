@@ -40,7 +40,13 @@ public class ProductService
             return false;
         }
         _dbContext.Products.Add(product);
+
+        await _dbContext.SaveChangesAsync(); 
+
+
         AddHistoryEntry(product.Id, product.Price);
+        
+   
         await _dbContext.SaveChangesAsync();
         return true;
     }

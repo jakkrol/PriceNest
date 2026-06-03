@@ -33,6 +33,7 @@ public class AuthService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
         var claims = new[]
         {
+        new Claim("UserId", existingUser.Id.ToString()),
         new Claim(JwtRegisteredClaimNames.Sub, user.Login),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
     };
