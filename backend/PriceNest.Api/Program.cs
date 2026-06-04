@@ -61,7 +61,7 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            if (context.Request.Cookies.TryGetValue("token", out string? token))
+            if (context.Request.Cookies.TryGetValue("access_token", out string? token))
             {
                 context.Token = token; 
             }
