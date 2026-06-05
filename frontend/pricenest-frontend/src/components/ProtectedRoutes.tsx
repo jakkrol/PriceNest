@@ -1,18 +1,18 @@
-'use client'
+// 'use client'
 
-import { useAuth } from "@/context/AuthContext"
-import { redirect } from "next/navigation"
+// import { useAuth } from "@/context/AuthContext"
+// import { redirect } from "next/navigation"
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
-    const { user, loading } = useAuth(); 
-    console.log(user)
-    if (loading) {
-        return null; 
-    }
+// export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
+//     const { user, loading } = useAuth(); 
+//     console.log(user)
+//     if (loading) {
+//         return null; 
+//     }
     
-    if (!user) {
-        redirect("/"); 
-    }
+//     if (!user) {
+//         redirect("/"); 
+//     }
 
-    return <>{children}</>;
-}
+//     return <>{children}</>;
+// }

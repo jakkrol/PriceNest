@@ -1,13 +1,13 @@
-'use client'
-
-import ProtectedRoute from "@/components/ProtectedRoutes";
+import Navbar from "@/components/Navbar";
+//import ProtectedRoute from "@/components/ProtectedRoutes";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (
-        <ProtectedRoute>
+        <div>
             <main className="dashboard-container">
+                <Navbar/>
                 {children}
             </main>
-        </ProtectedRoute>
+        </div>
     );
 }
