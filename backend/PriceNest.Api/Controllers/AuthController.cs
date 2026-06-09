@@ -47,7 +47,8 @@ public class AuthController : ControllerBase
             HttpOnly = true, // Kluczowe dla bezpieczeństwa! Skrypty JS (XSS) nie mają dostępu do tego ciastka.
             Secure = false,   // Wymagane, jeśli SameSite = None. Wymusza przesyłanie po HTTPS (lub localhost).
             SameSite = SameSiteMode.Lax, // Pozwala na przesyłanie ciastka cross-origin (z portu 5295 do 3000)
-            Expires = DateTime.UtcNow.AddMinutes(15) // Ważność ciastka (np. 7 dni)
+            Expires = DateTime.UtcNow.AddMinutes(15), // Ważność ciastka (np. 7 dni)
+            Path = "/"
         };
 
         var refreshTokenOptions = new CookieOptions
@@ -56,7 +57,9 @@ public class AuthController : ControllerBase
             Secure = false,    // false dla localhost HTTP
             SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddDays(7), // Ważność 7 dni, tak jak w bazie danych
-            Path = "/api/auth/refresh" // Przeglądarka wyśle to ciastko wyłącznie pod ten jeden adres!
+
+            //Not setting path becouse frontend needs to access this cookie in order to not log out on refresh if access token is expired
+            Path = "/"
         };
 
         Response.Cookies.Append("access_token", accessToken, accessTokenOptions);
@@ -107,7 +110,8 @@ public class AuthController : ControllerBase
             HttpOnly = true, // Kluczowe dla bezpieczeństwa! Skrypty JS (XSS) nie mają dostępu do tego ciastka.
             Secure = false,   // Wymagane, jeśli SameSite = None. Wymusza przesyłanie po HTTPS (lub localhost).
             SameSite = SameSiteMode.Lax, // Pozwala na przesyłanie ciastka cross-origin (z portu 5295 do 3000)
-            Expires = DateTime.UtcNow.AddMinutes(15) // Ważność ciastka (np. 7 dni)
+            Expires = DateTime.UtcNow.AddMinutes(15), // Ważność ciastka (np. 7 dni)
+            Path = "/"
         };
         Response.Cookies.Append("access_token", resToken.Value.AccessToken, accessTokenOptions);
         if (!string.IsNullOrEmpty(resToken.Value.RefreshToken))
@@ -118,7 +122,9 @@ public class AuthController : ControllerBase
                 Secure = false,    // false dla localhost HTTP
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTime.UtcNow.AddDays(7), // Ważność 7 dni, tak jak w bazie danych
-                Path = "/api/auth" // Przeglądarka wyśle to ciastko wyłącznie pod ten jeden adres!
+
+                //Not setting path becouse frontend needs to access this cookie in order to not log out on refresh if access token is expired
+                Path = "/"!
             };
             Response.Cookies.Append("refresh_token", resToken.Value.RefreshToken, refreshTokenOptions);
         }

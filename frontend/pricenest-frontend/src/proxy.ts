@@ -19,6 +19,9 @@ export function proxy(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
   const refreshToken = request.cookies.get("refresh_token")?.value;
 
+  console.log("Proxy middleware - Access Token:", accessToken);
+  console.log("Proxy middleware - Refresh Token:", refreshToken);
+
   const isProtectedRoute = pathname.startsWith("/dashboard");
 
 
