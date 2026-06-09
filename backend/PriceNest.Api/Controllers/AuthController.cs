@@ -61,7 +61,7 @@ public class AuthController : ControllerBase
 
         Response.Cookies.Append("access_token", accessToken, accessTokenOptions);
         Response.Cookies.Append("refresh_token", refreshToken, refreshTokenOptions);
-        
+
 
         return Ok(new { message = "Login successful." });
     }
@@ -90,19 +90,19 @@ public class AuthController : ControllerBase
     public async Task<ActionResult> RefreshToken()
     {
         Console.WriteLine("Attempting to refresh token");
-        if(!Request.Cookies.TryGetValue("refresh_token", out string? currentRefreshToken) || string.IsNullOrEmpty(currentRefreshToken))
+        if (!Request.Cookies.TryGetValue("refresh_token", out string? currentRefreshToken) || string.IsNullOrEmpty(currentRefreshToken))
         {
-            return BadRequest(new {message = "Refresh token missing"});
+            return BadRequest(new { message = "Refresh token missing" });
         }
 
         var resToken = await _authService.RefreshTokensAsync(currentRefreshToken);
-        
-        if(resToken == null)
+
+        if (resToken == null)
         {
-            return Unauthorized(new {message = "Invalid or expired token"});
+            return Unauthorized(new { message = "Invalid or expired token" });
         }
 
-         var accessTokenOptions = new CookieOptions
+        var accessTokenOptions = new CookieOptions
         {
             HttpOnly = true, // Kluczowe dla bezpieczeństwa! Skrypty JS (XSS) nie mają dostępu do tego ciastka.
             Secure = false,   // Wymagane, jeśli SameSite = None. Wymusza przesyłanie po HTTPS (lub localhost).
@@ -113,17 +113,17 @@ public class AuthController : ControllerBase
         if (!string.IsNullOrEmpty(resToken.Value.RefreshToken))
         {
             var refreshTokenOptions = new CookieOptions
-                {
-                    HttpOnly = true,   // Blokuje dostęp dla skryptów JS
-                    Secure = false,    // false dla localhost HTTP
-                    SameSite = SameSiteMode.Lax,
-                    Expires = DateTime.UtcNow.AddDays(7), // Ważność 7 dni, tak jak w bazie danych
-                    Path = "/api/auth/refresh" // Przeglądarka wyśle to ciastko wyłącznie pod ten jeden adres!
-                };
+            {
+                HttpOnly = true,   // Blokuje dostęp dla skryptów JS
+                Secure = false,    // false dla localhost HTTP
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(7), // Ważność 7 dni, tak jak w bazie danych
+                Path = "/api/auth" // Przeglądarka wyśle to ciastko wyłącznie pod ten jeden adres!
+            };
             Response.Cookies.Append("refresh_token", resToken.Value.RefreshToken, refreshTokenOptions);
         }
 
-        return Ok(new {message = "Token refreshed"});
+        return Ok(new { message = "Token refreshed" });
     }
 
 

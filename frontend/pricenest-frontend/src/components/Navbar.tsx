@@ -19,14 +19,14 @@ export default function Navbar() {
         if (typeof user === "object") {
             return user.username || user.login || user.name || "User";
         }
-        return user; 
+        return user;
     };
 
     return (
-        <nav className="bg-nav-bg text-nav-text sticky top-0 z-50 transition-colors duration-200 min-w-full">
+        <nav className="bg-background sticky top-0 z-50  duration-200 min-w-full">
             <div className=" mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    
+
                     {/* LOGO */}
                     <div className="shrink-0">
                         <h1 className="text-xl font-bold tracking-wider text-nav-accent">
@@ -50,7 +50,7 @@ export default function Navbar() {
                             <span className="text-sm text-nav-muted">
                                 Hello, <strong className="text-nav-text">{renderUsername()}</strong>
                             </span>
-                            <button 
+                            <button
                                 onClick={handleLogout}
                                 className="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer"
                             >
@@ -66,7 +66,7 @@ export default function Navbar() {
                     {/* MOBILE CONTROLS */}
                     <div className="md:hidden flex items-center space-x-4">
                         <ThemeToggle />
-                        
+
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             type="button"
@@ -90,22 +90,22 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="md:hidden bg-nav-bg border-t border-nav-border">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        <Link 
-                            href="/dashboard" 
+                        <Link
+                            href="/dashboard"
                             onClick={() => setIsMenuOpen(false)}
                             className="block px-3 py-2 rounded-md text-base font-medium hover:bg-nav-border/30"
                         >
                             Dashboard
                         </Link>
-                        <Link 
-                            href="/dashboard/watchlist" 
+                        <Link
+                            href="/dashboard/watchlist"
                             onClick={() => setIsMenuOpen(false)}
                             className="block px-3 py-2 rounded-md text-base font-medium hover:bg-nav-border/30"
                         >
                             Watchlista
                         </Link>
-                        <Link 
-                            href="/dashboard/profile" 
+                        <Link
+                            href="/dashboard/profile"
                             onClick={() => setIsMenuOpen(false)}
                             className="block px-3 py-2 rounded-md text-base font-medium hover:bg-nav-border/30"
                         >
@@ -115,7 +115,7 @@ export default function Navbar() {
                             <span className="text-sm text-nav-muted">
                                 Zalogowany jako: <strong className="text-nav-text">{renderUsername()}</strong>
                             </span>
-                            <button 
+                            <button
                                 onClick={handleLogout}
                                 className="w-full bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md text-base font-medium transition-colors cursor-pointer"
                             >

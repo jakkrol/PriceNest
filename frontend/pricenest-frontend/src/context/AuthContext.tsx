@@ -2,7 +2,6 @@
 
 import { createContext, useState, useEffect, useContext } from "react"
 import { axiosLogin } from "@/api/axios"
-import axiosInstance from "@/api/axiosInstance"
 
 interface AuthContextType {
     user: any | null
@@ -15,17 +14,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<any | null>(null);
-    const [loading, setLoading] = useState<boolean>(true); 
+    const [loading, setLoading] = useState<boolean>(true);
 
     // useEffect(() => {
     //     const initializeAuth = async () => {
     //         try {
     //             const storedUser = localStorage.getItem("user");
-                
+
     //             if (storedUser) {      
     //                 await axiosInstance.post("/api/auth/refresh");
     //                 setUser(JSON.parse(storedUser));
-                   
+
     //             }
     //         } catch (error) {
     //             console.log("Session no longer active")
@@ -40,14 +39,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         try {
             const storedUser = localStorage.getItem("user");
-            if (storedUser) {      
+            if (storedUser) {
                 setUser(JSON.parse(storedUser));
             }
         } catch (error) {
             console.error("Błąd odczytu localStorage:", error);
             localStorage.removeItem("user");
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     }, []);
 
@@ -56,8 +55,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             console.log("Forced logout triggered by Axios interceptor.");
             logout();
         };
-        window.addEventListener("auth:force-logout", handleForceLogout);
-        return () => window.removeEventListener("auth:force-logout", handleForceLogout);
+        window.addEventListener("force-logout", handleForceLogout);
+        return () => window.removeEventListener("force-logout", handleForceLogout);
     }, []);
 
     const login = async (username: string, password: string) => {

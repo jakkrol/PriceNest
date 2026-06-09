@@ -8,20 +8,20 @@ const axiosInstance = axios.create({
     },
 });
 
-axios.interceptors.response.use(
+axiosInstance.interceptors.response.use(
     (response) => response,
 
-    async(error) => {
+    async (error) => {
         const originalRequest = error.config;
 
-        if(error.response.status == 401 && !originalRequest._retry){
+        if (error.response.status == 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             console.log("Trying to refresh token")
-            try{
+            try {
                 await axiosInstance.post("/api/auth/refresh");
                 return axiosInstance(originalRequest);
-            }catch(err){
-                const logoutEvent = new CustomEvent("fore-logout")
+            } catch (err) {
+                const logoutEvent = new CustomEvent("force-logout")
                 window.dispatchEvent(logoutEvent)
                 return Promise.reject(err)
             }

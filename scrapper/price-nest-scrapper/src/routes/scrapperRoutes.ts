@@ -1,5 +1,6 @@
+// ../routes/routes.ts
 import { Router, type Request, type Response } from "express";
-import scrapeCeneo from "../services/scrapper.js";
+import scrapeAllStores from "../services/scrapper.js"; // Importujesz główny orkiestrator
 
 const router = Router();
 
@@ -11,12 +12,13 @@ router.post("/scrape", async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Item is required" });
         }
 
-        const data = await scrapeCeneo(item);
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: "An error occurred while scraping data" });
-    }
+        const data = await scrapeAllStores(item);
 
+        return res.json(data);
+    } catch (error) {
+        console.error("[Router Error]:", error);
+        return res.status(500).json({ error: "An error occurred while scraping data" });
+    }
 });
 
 export default router;

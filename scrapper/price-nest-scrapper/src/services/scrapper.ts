@@ -1,53 +1,33 @@
-import { chromium } from "playwright";
+// ../services/scrapper.ts
+import scrapeCeneo from "./scrapers/ceneo.js";
+import scrapeSkapiec from "./scrapers/skapiec.js";
+import scrapeAmazon from "./scrapers/amazon.js";
 
-export default async function scrapeCeneo(productName: string) {
-    const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext({
-        userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    });
-    const page = await context.newPage();
+export default async function scrapeAllStores(productName: string) {
+    console.log(`[Mikroserwis] Uruchamianie równoległego wyszukiwania dla: ${productName}`);
 
-    try {
-        productName = productName.toUpperCase()
-        console.log(`Scraping Ceneo for product: ${productName}`);
-        await page.goto(`https://www.ceneo.pl/;szukaj-${encodeURIComponent(productName)}`, { waitUntil: "domcontentloaded" });
+    // Odpalamy wszystkie scrapery jednocześnie
+    const results = await Promise.allSettled([
+        scrapeCeneo(productName),
+        scrapeSkapiec(productName),
+        scrapeAmazon(productName)
+    ]);
 
-        try {
-            await page.waitForSelector('.cat-prod-row__body', { timeout: 5000 });
-        } catch (e) {
-            console.log("Nie znaleziono standardowych wierszy produktów.");
+    const allProducts: any[] = [];
+
+    results.forEach((result) => {
+        if (result.status === "fulfilled" && result.value) {
+            // Sklepy zwróciły tablice produktów, wrzucamy je do jednej wspólnej listy
+            allProducts.push(...result.value);
+        } else if (result.status === "rejected") {
+            console.error("[Mikroserwis] Jeden ze scraperów zgłosił błąd:", result.reason);
         }
+    });
 
-        await page.mouse.wheel(0, 1000)
-        await page.waitForTimeout(500)
-
-        const products = await page.$$eval('.cat-prod-row__body, .cat-prod-row', (items) => {
-            console.log("Founded")
-            return items.map(item => {
-                const rawTitle = item.querySelector('.cat-prod-row__name, .cat-prod-row__desc')?.textContent || "";
-                //const title = item.querySelector('.cat-prod-row__content')?.textContent?.trim();
-                const rawPrice = item.querySelector('.price')?.textContent || "";
-                const cleanTitle = rawTitle.replace(/\s+/g, ' ').trim();
-
-                // Dla ceny usuwamy wszystko poza cyframi, przecinkiem i spacją przed walutą
-                const cleanPrice = rawPrice.replace(/\s+/g, ' ').trim();
-
-                return { title: cleanTitle, price: cleanPrice };
-            }).filter(p => p.title && p.price);
-        });
-
-        //console.table(products);
-        // JSON.stringify(JSON.parse(products))
-        return products;
-
-    } catch (error) {
-        console.error("Error occurred:", error);
-    } finally {
-        console.log("Success");
-        //await page.pause()
-        await browser.close();
-    }
-
-
+    // Globalne sortowanie ofert od najtańszej dla całego mikroserwisu
+    return allProducts.sort((a, b) => {
+        const priceA = parseFloat(a.price.replace(/[^\d,]/g, '').replace(',', '.'));
+        const priceB = parseFloat(b.price.replace(/[^\d,]/g, '').replace(',', '.'));
+        return (isNaN(priceA) ? Infinity : priceA) - (isNaN(priceB) ? Infinity : priceB);
+    });
 }
-

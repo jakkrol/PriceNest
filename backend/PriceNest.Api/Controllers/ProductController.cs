@@ -61,6 +61,7 @@ public class ProductController : ControllerBase
     [HttpPost("scrape")]
     public async Task<ActionResult> ScrapeProduct(string item)
     {
+        Console.WriteLine($"Received scrape request for item: {item}");
         var scrapedJson = await _scraperService.ScrapeData(item);
         return Ok(scrapedJson);
     }

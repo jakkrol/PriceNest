@@ -56,7 +56,7 @@ public class AuthService
         existingUser.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
         await _dbContext.SaveChangesAsync();
         ///
-        
+
         return (accessTokenString, refreshTokenString);
     }
 
@@ -84,8 +84,9 @@ public class AuthService
 
     public async Task<(string AccessToken, string? RefreshToken)?> RefreshTokensAsync(string currentRefreshToken)
     {
+        Console.WriteLine("Attempting to refresh token in service");
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == currentRefreshToken);
-        if(user == null || !user.RefreshTokenExpiryTime.HasValue || user.RefreshTokenExpiryTime.Value <= DateTime.UtcNow)
+        if (user == null || !user.RefreshTokenExpiryTime.HasValue || user.RefreshTokenExpiryTime.Value <= DateTime.UtcNow)
         {
             return null;
         }
@@ -98,11 +99,11 @@ public class AuthService
         if (remainingTime.TotalDays < 2)
         {
             newRefreshToken = Guid.NewGuid().ToString();
-            
+
             user.RefreshToken = newRefreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-            await _dbContext.SaveChangesAsync(); 
+            await _dbContext.SaveChangesAsync();
         }
         return (accessToken, newRefreshToken);
     }

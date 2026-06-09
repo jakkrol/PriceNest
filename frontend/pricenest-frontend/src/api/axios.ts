@@ -17,3 +17,16 @@ export const axiosGetProductsById = async (id: string) => {
         throw error;
     }
 }
+
+/////////////////////////////////////////////////////////////////////////////
+export const axiosScrapeProduct = async (item: string) => {
+    try {
+        console.log("Wysyłam zapytanie do scrapera z itemem:", item);
+
+        return await axiosInstance.post(`/api/product/scrape?item=${encodeURIComponent(item)}`, {});
+    } catch (error) {
+        console.error("Error scraping product:", error);
+        throw error;
+    }
+}
+
