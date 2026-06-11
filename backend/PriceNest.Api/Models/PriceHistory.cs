@@ -8,6 +8,6 @@ public class PriceHistory
     public int ProductId { get; set; }
     public decimal Price { get; set; }
     public DateTime CheckedAt { get; set; }
-    
+
     public Product Product { get; set; } = null!;
 }

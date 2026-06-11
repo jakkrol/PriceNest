@@ -60,5 +60,20 @@ public class UserController : ControllerBase
     // }
 
 
+    [HttpGet]
+    public async Task<string> TestClaims()
+    {
+        var claim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+        Console.WriteLine($"Claims in controller: {string.Join(", ", User.Claims.Select(c => $"{c.Type}: {c.Value}"))}");
+        if (claim != null)
+        {
+            return $"User ID from claims: {claim.Value}";
+        }
+        else
+        {
+            return "User ID claim not found.";
+        }
 
+
+    }
 }

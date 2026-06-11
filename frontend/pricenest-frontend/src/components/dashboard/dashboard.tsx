@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { axiosScrapeProduct } from "@/api/axios";
+import AddProductModal from "./AddProductModal";
 
 interface ScrapedProduct {
     id?: string;
@@ -13,6 +14,8 @@ interface ScrapedProduct {
 }
 
 export default function Dashboard() {
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
     const [query, setQuery] = useState<string>("");
     const [isScraping, setIsScraping] = useState<boolean>(false);
     const [scrapedProducts, setScrapedProducts] = useState<ScrapedProduct[]>([]);
@@ -150,7 +153,7 @@ export default function Dashboard() {
                                         </div>
 
                                         <button
-                                            onClick={() => handleAddToWatchlist(product)}
+                                            onClick={() => setIsModalOpen(true)}
                                             className="rounded-md bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors"
                                         >
                                             Śledź cenę
@@ -162,6 +165,8 @@ export default function Dashboard() {
                     </div>
                 )}
             </div>
+
+            <AddProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </div>
     );
 }

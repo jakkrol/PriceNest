@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
 export const axiosLogin = async (username: string, password: string) => {
@@ -26,6 +27,18 @@ export const axiosScrapeProduct = async (item: string) => {
         return await axiosInstance.post(`/api/product/scrape?item=${encodeURIComponent(item)}`, {});
     } catch (error) {
         console.error("Error scraping product:", error);
+        throw error;
+    }
+}
+
+
+// TO TEST ENDPOINT
+export const axiosAddToWatchlist = async (prodyctName: string, currentUrl: string, currentPrice: number, targetPrice: number) => {
+    try {
+        console.log("Wysyłam zapytanie do dodania do watchlisty z danymi:", { prodyctName, currentUrl, currentPrice, targetPrice });
+        return await axiosInstance.post("/api/watchlist", { prodyctName, currentUrl, currentPrice, targetPrice });
+    } catch (error) {
+        console.error("Error adding product to watchlist:", error);
         throw error;
     }
 }
