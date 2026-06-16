@@ -115,7 +115,6 @@ public async Task SaveOrUpdateOfferAsync(int productId, string storeName, string
 
         if (existingOffer != null)
         {
-            // Jeśli cena się zmieniła, dopisujemy stary rekord do historii
             if (existingOffer.Price != price || existingOffer.Url != url)
             {
                 AddHistoryEntry(existingOffer.Id, existingOffer.Price);
@@ -127,7 +126,6 @@ public async Task SaveOrUpdateOfferAsync(int productId, string storeName, string
         }
         else
         {
-            // Tworzymy nową ofertę dla tego produktu
             var newOffer = new ProductOffer
             {
                 ProductId = productId,
