@@ -12,8 +12,8 @@ using PriceNest.Api.Data;
 namespace PriceNest.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260604095015_UpdateUserForToken")]
-    partial class UpdateUserForToken
+    [Migration("20260616082931_InitialCreateAfterRefactor")]
+    partial class InitialCreateAfterRefactor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,12 +39,12 @@ namespace PriceNest.Api.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProductOfferId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductOfferId");
 
                     b.ToTable("PriceHistories");
                 });
@@ -57,15 +57,38 @@ namespace PriceNest.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("PriceNest.Api.Models.ProductOffer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("StoreName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -73,7 +96,10 @@ namespace PriceNest.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.HasIndex("ProductId", "StoreName")
+                        .IsUnique();
+
+                    b.ToTable("ProductOffers");
                 });
 
             modelBuilder.Entity("PriceNest.Api.Models.User", b =>
@@ -118,6 +144,10 @@ namespace PriceNest.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("PreferredStores")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
@@ -139,8 +169,19 @@ namespace PriceNest.Api.Migrations
 
             modelBuilder.Entity("PriceNest.Api.Models.PriceHistory", b =>
                 {
-                    b.HasOne("PriceNest.Api.Models.Product", "Product")
+                    b.HasOne("PriceNest.Api.Models.ProductOffer", "ProductOffer")
                         .WithMany("PriceHistories")
+                        .HasForeignKey("ProductOfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductOffer");
+                });
+
+            modelBuilder.Entity("PriceNest.Api.Models.ProductOffer", b =>
+                {
+                    b.HasOne("PriceNest.Api.Models.Product", "Product")
+                        .WithMany("ProductOffers")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -169,9 +210,14 @@ namespace PriceNest.Api.Migrations
 
             modelBuilder.Entity("PriceNest.Api.Models.Product", b =>
                 {
-                    b.Navigation("PriceHistories");
+                    b.Navigation("ProductOffers");
 
                     b.Navigation("WatchlistItems");
+                });
+
+            modelBuilder.Entity("PriceNest.Api.Models.ProductOffer", b =>
+                {
+                    b.Navigation("PriceHistories");
                 });
 
             modelBuilder.Entity("PriceNest.Api.Models.User", b =>

@@ -20,11 +20,11 @@ public class ProductPlugin
     public async Task<string> GetProductDetails(
         [Description("Unikalny identyfikator produktu (ID)")] int id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await _productService.GetProductByIdWithOffersAsync(id);
 
         if (product == null) return "Niestety nie znalazłem produktu o takim ID.";
 
-        return $"Produkt: {product.Name}, Cena: {product.Price} PLN";
+        return $"Produkt: {product.Name}, Oferty: {product.Offers}";
     }
 
     [KernelFunction]

@@ -10,4 +10,5 @@ public class WatchlistItem
     public Product Product { get; set; } = null!;
 
     public decimal TargetPrice { get; set; }
+    public string PreferredStores { get; set; } = String.Empty;
 }

@@ -21,20 +21,21 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Product>> GetProduct(int id)
+    public async Task<ActionResult<ProductResponseDto>> GetProduct(int id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await _productService.GetProductByIdWithOffersAsync(id);
         if (product == null)
         {
             return NotFound();
         }
+
         return Ok(product);
     }
 
     [HttpGet("{id}/history")]
     public async Task<ActionResult<List<PriceHistory>>> GetPriceHistory(int id)
     {
-        var history = await _productService.GetPriceHistoryAsync(id);
+        var history = await _productService.GetPriceHistoryByProductAsync(id);
         if (history == null || history.Count == 0)
         {
             return NotFound();

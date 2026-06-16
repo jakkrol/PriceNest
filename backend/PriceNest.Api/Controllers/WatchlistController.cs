@@ -13,12 +13,11 @@ namespace PriceNest.Api.Controllers;
 public class WatchlistController : ControllerBase
 {
     private readonly WatchListService _watchListService;
-    private readonly ScraperService _scraperService;
 
-    public WatchlistController(WatchListService watchListService, ScraperService scraperService)
+
+    public WatchlistController(WatchListService watchListService)
     {
         _watchListService = watchListService;
-        _scraperService = scraperService;
     }
 
 
@@ -34,18 +33,29 @@ public class WatchlistController : ControllerBase
 
         int userId = int.Parse(userIdClaim.Value);
 
-        await _watchListService.AddProductToWatchListAsync(userId, dto.ProductName, dto.currentUrl, dto.currentPrice, dto.TargetPrice);
+        await _watchListService.AddProductToWatchListAsync(userId, dto.ProductName, dto.StoreName, dto.currentUrl, dto.currentPrice, dto.TargetPrice);
         return Ok(new { message = "Product added to watchlist." });
     }
 
 
 
 
+
     // To complete those methods, also need to get user id from claims
     [HttpGet]
-    public async Task<ActionResult<List<WatchlistItem>>> GetWatchlist()
+    public async Task<ActionResult<List<WatchlistResponseDto>>> GetWatchlist()
     {
-        return Ok(await _watchListService.GetWatchListAsync(1)); // To modify, get user id from claims
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+        if (userIdClaim == null)
+        {
+            return Unauthorized(new { message = "User ID claim is missing." });
+        }
+
+        int userId = int.Parse(userIdClaim.Value);
+
+        var watchlist = await _watchListService.GetWatchListAsync(userId);
+
+        return Ok(watchlist);
     }
 
     [HttpDelete("{productId}")]
