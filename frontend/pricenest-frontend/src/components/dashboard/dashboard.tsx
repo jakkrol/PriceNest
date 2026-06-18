@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { axiosScrapeProduct } from "@/api/axios";
 import AddProductModal from "./AddProductModal";
+import { title } from "process";
 
 interface ScrapedProduct {
     id?: string;
@@ -15,10 +16,12 @@ interface ScrapedProduct {
 
 export default function Dashboard() {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [selectedProduct, setSelectedProduct] = useState<ScrapedProduct | null>(null);
 
     const [query, setQuery] = useState<string>("");
     const [isScraping, setIsScraping] = useState<boolean>(false);
     const [scrapedProducts, setScrapedProducts] = useState<ScrapedProduct[]>([]);
+
 
     const formatDisplayPrice = (priceStr: string) => {
         if (!priceStr) return "0.00";
@@ -26,6 +29,11 @@ export default function Dashboard() {
         const num = parseFloat(cleanPrice);
         return isNaN(num) ? priceStr : num.toFixed(2);
     };
+
+    const handleModalOpen = (product: ScrapedProduct) => {
+        setIsModalOpen(true);
+        setSelectedProduct(product);
+    }
 
     const handleSearchAndScrape = async (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -43,9 +51,9 @@ export default function Dashboard() {
         }
     };
 
-    const handleAddToWatchlist = async (product: ScrapedProduct) => {
-        console.log("Dodaję do watchlisty:", product);
-    };
+    // const handleAddToWatchlist = async (product: ScrapedProduct) => {
+    //     console.log("Dodaję do watchlisty:", product);
+    // };
 
     return (
         <div className="p-6 space-y-8 min-h-screen text-color">
@@ -153,7 +161,7 @@ export default function Dashboard() {
                                         </div>
 
                                         <button
-                                            onClick={() => setIsModalOpen(true)}
+                                            onClick={() => handleModalOpen(product)}
                                             className="rounded-md bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors"
                                         >
                                             Śledź cenę
@@ -166,7 +174,7 @@ export default function Dashboard() {
                 )}
             </div>
 
-            <AddProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+            <AddProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={selectedProduct?.title || ""} price={selectedProduct?.price || ""} />
         </div>
     );
 }

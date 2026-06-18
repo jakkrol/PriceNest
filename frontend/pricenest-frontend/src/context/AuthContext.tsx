@@ -40,6 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             const storedUser = localStorage.getItem("user");
             if (storedUser) {
+                console.log("Ustawiam user na" + storedUser)
                 setUser(JSON.parse(storedUser));
             }
         } catch (error) {

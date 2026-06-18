@@ -15,6 +15,7 @@ export default function Navbar() {
     };
 
     const renderUsername = () => {
+        console.log("User: " + user)
         if (!user) return "";
         if (typeof user === "object") {
             return user.username || user.login || user.name || "User";
