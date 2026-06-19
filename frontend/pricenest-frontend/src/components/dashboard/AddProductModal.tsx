@@ -1,6 +1,7 @@
 "use client";
 
 import { axiosAddToWatchlist } from "@/api/axios";
+import { useEffect, useState } from "react";
 
 interface AddProductModalProps {
     isOpen: boolean;
@@ -12,7 +13,24 @@ interface AddProductModalProps {
 
 export default function AddProductModal({ isOpen, onClose, title, price }: AddProductModalProps) {
 
+    const [selectedWords, setSelectedWords] = useState<string[]>([]);
     var titleAr = title.split(" ");
+
+    const toggleSelect = (word: string) => {
+        if (selectedWords.includes(word)) {
+            // Jesli wybrane - usun
+            setSelectedWords(selectedWords.filter((w) => w !== word));
+        } else {
+            // Jesli nie wybrane - dodaj
+            setSelectedWords([...selectedWords, word]);
+        }
+
+    };
+
+    const handleSelect = () => {
+        alert(selectedWords)
+    }
+
 
     if (!isOpen) return null;
     return (
@@ -32,7 +50,30 @@ export default function AddProductModal({ isOpen, onClose, title, price }: AddPr
 
                 <div className="py-4 border-y border-white/5 text-sm text-gray-400">
                     {/* TODO - map the title and wrap them into separate buttons to check out and create a new normalized product name based on the selected parts */}
-                    {titleAr[0]}
+                    {/* {titleAr[0]} */}
+                    {/* Kontener na pigułki (Flexbox z zawijaniem) */}
+                    <div className="flex flex-wrap gap-2">
+                        {titleAr.map((word, id) => {
+                            const isSelected = selectedWords.includes(word);
+
+                            return (
+                                <button
+                                    key={id}
+                                    onClick={() => toggleSelect(word)}
+                                    type="button"
+                                    className={`
+                                                px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-200 border
+                                                ${isSelected
+                                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm scale-95'
+                                            : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
+                                        }
+                                    `}
+                                >
+                                    {word}
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 <div className="flex justify-end gap-3">
@@ -45,7 +86,7 @@ export default function AddProductModal({ isOpen, onClose, title, price }: AddPr
                     </button>
                     <button
                         type="button"
-                        onClick={() => alert("Zapisano! (Logika do dodania)")}
+                        onClick={handleSelect}
                         className="rounded-md bg-indigo-500 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-400 transition-colors"
                     >
                         Uruchom monitoring
