@@ -7,28 +7,61 @@ interface AddProductModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
+    productUrl: string;
     price: string;
 }
 
 
-export default function AddProductModal({ isOpen, onClose, title, price }: AddProductModalProps) {
+export default function AddProductModal({ isOpen, onClose, title, productUrl, price }: AddProductModalProps) {
 
     const [selectedWords, setSelectedWords] = useState<string[]>([]);
     var titleAr = title.split(" ");
+    const stopWords = new Set([
+        "for",
+        "with",
+        "and",
+        "the",
+        "of",
+        "to",
+        "in",
+        "on",
+        "at",
+        "a",
+        "an",
+        "&",
+        "free",
+        "day",
+    ]);
+    const keywords = titleAr.map(word => word.toLowerCase().replace(/^[,.;:!?()]+|[,.;:!?()]+$/g, "")).filter(word => word.length > 1).filter(word => !stopWords.has(word))
+
+    // const toggleSelect = (word: string) => {
+    //     if (selectedWords.includes(word)) {
+    //         // Jesli wybrane - usun
+    //         setSelectedWords(selectedWords.filter((w) => w !== word));
+    //     } else {
+    //         // Jesli nie wybrane - dodaj
+    //         setSelectedWords([...selectedWords, word]);
+    //     }
+
+    // };
 
     const toggleSelect = (word: string) => {
         if (selectedWords.includes(word)) {
-            // Jesli wybrane - usun
             setSelectedWords(selectedWords.filter((w) => w !== word));
         } else {
-            // Jesli nie wybrane - dodaj
             setSelectedWords([...selectedWords, word]);
         }
+    }
 
-    };
-
-    const handleSelect = () => {
+    const handleSelect = async () => {
         alert(selectedWords)
+        try {
+            // testing api call with custom prices
+            var fullName = selectedWords.join(" ")
+            await axiosAddToWatchlist(fullName, productUrl, 2000, 1000, "")
+        } catch (error) {
+            alert("Error occurred while adding product to watchlist. Please try again.");
+        }
     }
 
 
@@ -53,7 +86,7 @@ export default function AddProductModal({ isOpen, onClose, title, price }: AddPr
                     {/* {titleAr[0]} */}
                     {/* Kontener na pigułki (Flexbox z zawijaniem) */}
                     <div className="flex flex-wrap gap-2">
-                        {titleAr.map((word, id) => {
+                        {keywords.map((word, id) => {
                             const isSelected = selectedWords.includes(word);
 
                             return (

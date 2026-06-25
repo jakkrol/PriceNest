@@ -33,10 +33,10 @@ export const axiosScrapeProduct = async (item: string) => {
 
 
 // TO TEST ENDPOINT
-export const axiosAddToWatchlist = async (prodyctName: string, currentUrl: string, currentPrice: number, targetPrice: number) => {
+export const axiosAddToWatchlist = async (productName: string, currentUrl: string, currentPrice: number, targetPrice: number, storeName: string) => {
     try {
-        console.log("Wysyłam zapytanie do dodania do watchlisty z danymi:", { prodyctName, currentUrl, currentPrice, targetPrice });
-        return await axiosInstance.post("/api/watchlist", { prodyctName, currentUrl, currentPrice, targetPrice });
+        console.log("Wysyłam zapytanie do dodania do watchlisty z danymi:", { productName, currentUrl, currentPrice, targetPrice, storeName });
+        return await axiosInstance.post("/api/watchlist", { productName, currentUrl, currentPrice, targetPrice, storeName });
     } catch (error) {
         console.error("Error adding product to watchlist:", error);
         throw error;

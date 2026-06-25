@@ -174,7 +174,7 @@ export default function Dashboard() {
                 )}
             </div>
 
-            <AddProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={selectedProduct?.title || ""} price={selectedProduct?.price || ""} />
+            <AddProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={selectedProduct?.title || ""} productUrl={selectedProduct?.productUrl || ""} price={selectedProduct?.price || ""} />
         </div>
     );
 }
