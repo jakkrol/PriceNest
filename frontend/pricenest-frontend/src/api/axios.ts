@@ -43,3 +43,13 @@ export const axiosAddToWatchlist = async (productName: string, currentUrl: strin
     }
 }
 
+
+export const axiosGetWatchlist = async () => {
+    try {
+        return await axiosInstance.get("/api/watchlist");
+    } catch (error) {
+        console.error("Error fetching watchlist:", error);
+        throw error;
+    }
+}
+
