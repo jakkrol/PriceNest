@@ -3,16 +3,8 @@
 import { useState } from "react";
 import { axiosScrapeProduct } from "@/api/axios";
 import AddProductModal from "./AddProductModal";
-import { title } from "process";
+import { ScrapedProduct } from "@/app/types/data";
 
-interface ScrapedProduct {
-    id?: string;
-    title: string;
-    price: string;
-    productUrl?: string;
-    imageUrl?: string;
-    storeName?: string;
-}
 
 export default function Dashboard() {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

@@ -1,11 +1,12 @@
 'use client'
 
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { axiosGetWatchlist } from "@/api/axios"
+import { WatchlistItem } from "@/app/types/data"
 
 export default function Watchlist() {
 
-    const [watchlist, setWatchlist] = useState([])
+    const [watchlist, setWatchlist] = useState<WatchlistItem[]>([])
 
     useEffect(() => {
         const fetchWatchlist = async () => {
@@ -19,13 +20,32 @@ export default function Watchlist() {
 
     //test data
     useEffect(() => {
-        console.log("Watchlist data:", watchlist)
+        console.log("Watchlist data:", watchlist[0])
+
     }, [watchlist])
+
+    //testing output, need to add modal popup or new page on click to check more detailed info and look and some functions or smth, idk
     return (
-        <div className="flex flex-col items-center min-h-screen py-2">
-            <h1 className="text-4xl font-bold mb-8 font-serif">Watchlist</h1>
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">Twoja Watchlista</h1>
 
-
+            <div className="space-y-4">
+                {watchlist.map((item) => (
+                    <div key={item.productId} className="border p-4 rounded-lg shadow">
+                        <h2 className="text-xl font-semibold">{item.productId}</h2>
+                        <h2 className="text-xl font-semibold">{item.productName}</h2>
+                        <p className="text-gray-600">Cena docelowa: {item.targetPrice} zł</p>
+                        <div className="mt-2">
+                            <h3 className="font-medium">Dostępne oferty ({item.offers.length}):</h3>
+                            {item.offers.map((offer, index) => (
+                                <p key={index} className="text-sm text-green-600">
+                                    {offer.storeName} - {offer.price} zł
+                                </p>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
-    )
+    );
 }
