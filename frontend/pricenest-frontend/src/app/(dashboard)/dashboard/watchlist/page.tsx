@@ -1,4 +1,4 @@
-import Watchlist from "@/components/watchlist/watchlist";
+import Watchlist from "@/components/watchlist/Watchlist"
 
 export default function Home() {
     return (
