@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { axiosGetWatchlist } from "@/api/axios"
-import { WatchlistItem } from "@/app/types/data"
+import { WatchlistItem } from "@/types/data"
 import ItemPreviewModal from "./ItemPreviewModal"
 
 export default function Watchlist() {
 
     const [watchlist, setWatchlist] = useState<WatchlistItem[]>([])
     const [isItemDisplayed, setIsItemDisplayed] = useState<boolean>(false)
+    const [selectedItem, setSelectedItem] = useState<WatchlistItem | null>(null)
 
     useEffect(() => {
         const fetchWatchlist = async () => {
@@ -26,8 +27,14 @@ export default function Watchlist() {
 
     }, [watchlist])
 
-    const handleShowItem = () => {
+    const handleShowItem = (item: WatchlistItem) => {
+        setSelectedItem(item)
         setIsItemDisplayed(true)
+    }
+
+    const handleCloseItem = () => {
+        setSelectedItem(null)
+        setIsItemDisplayed(false)
     }
 
     //testing output, need to add modal popup or new page on click to check more detailed info and look and some functions or smth, idk
@@ -49,11 +56,11 @@ export default function Watchlist() {
                                 </p>
                             ))}
                         </div>
-                        <button className="bg-blue-400" onClick={handleShowItem}>Show Data</button>
+                        <button className="bg-blue-400" onClick={() => handleShowItem(item)}>Show Data</button>
                     </div>
                 ))}
             </div>
-            <ItemPreviewModal isOpen={isItemDisplayed} />
+            <ItemPreviewModal isOpen={isItemDisplayed} item={selectedItem} onClose={handleCloseItem} />
         </div>
     );
 }

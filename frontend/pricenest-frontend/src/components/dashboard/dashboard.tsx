@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { axiosScrapeProduct } from "@/api/axios";
 import AddProductModal from "./AddProductModal";
-import { ScrapedProduct } from "@/app/types/data";
+import { ScrapedProduct } from "@/types/data";
 
 
 export default function Dashboard() {
