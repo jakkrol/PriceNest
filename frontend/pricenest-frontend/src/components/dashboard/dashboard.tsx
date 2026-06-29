@@ -63,7 +63,7 @@ export default function Dashboard() {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             disabled={isScraping}
-                            className="block w-full rounded-md bg-white/5 px-4 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 disabled:opacity-50"
+                            className="block w-full rounded-md bg-gray-300 dark:bg-white/5 px-4 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-gray-700 dark:outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 disabled:opacity-50"
                         />
                     </div>
                     <button
@@ -98,7 +98,7 @@ export default function Dashboard() {
 
                 {/* Stan 2: Ekran startowy */}
                 {!isScraping && scrapedProducts.length === 0 && (
-                    <div className="text-center py-24 border border-dashed border-white/10 rounded-xl bg-white/5 max-w-xl mx-auto">
+                    <div className="text-center py-24 border border-dashed outline-gray-700 dark:border-white/10 rounded-xl bg-gray-300 dark:bg-white/5 max-w-xl mx-auto">
                         <h3 className="text-sm font-semibold text-color">Miejsce na Twoje wyniki</h3>
                         <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
                             Po wpisaniu frazy i kliknięciu "Szukaj", tutaj pojawią się najtańsze aktualne oferty z sieci.
