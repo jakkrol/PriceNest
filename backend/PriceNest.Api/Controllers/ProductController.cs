@@ -19,6 +19,17 @@ public class ProductController : ControllerBase
         _scraperService = scraperService;
         _productService = productService;
     }
+    //testing endpoint to scrape all products in the database
+    [HttpPost("scrape-watchlist")]
+    public async Task<ActionResult> ScrapeWatchlist()
+    {
+        var res = await _scraperService.ScrapeFromDb();
+        if (res != null)
+        {
+            return Ok(res);
+        }
+        return StatusCode(500, "An error occurred while scraping watchlist data");
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ProductResponseDto>> GetProduct(int id)

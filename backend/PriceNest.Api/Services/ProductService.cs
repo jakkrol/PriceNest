@@ -143,8 +143,7 @@ public async Task SaveOrUpdateOfferAsync(int productId, string storeName, string
         }
         catch (DbUpdateException)
         {
-            // Zabezpieczenie anty-wyścigowe: jeśli scraper puścił dwa zapytania dla tego samego sklepu naraz,
-            // indeks UNIQUE na ProductId + StoreName rzuci błąd. Łapiemy go i ignorujemy duplikat.
+           throw;
         }
     }
 

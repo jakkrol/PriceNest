@@ -29,3 +29,23 @@ export default async function scrapeAllStores(productName: string) {
         return (isNaN(priceA) ? Infinity : priceA) - (isNaN(priceB) ? Infinity : priceB);
     });
 }
+
+
+export async function scrapeDailyWatchlist(products: string[]) {
+    const maxConcurrentScrapes = 5;
+    const allResults: any[] = [];
+
+    for (let i = 0; i < products.length; i += maxConcurrentScrapes) {
+        const batch = products.slice(i, i + maxConcurrentScrapes);
+        const results = await Promise.allSettled(batch.map(product => scrapeAllStores(product)));
+
+        results.forEach((result, index) => {
+            if (result.status === "fulfilled" && result.value) {
+                allResults.push(...result.value);
+            } else if (result.status === "rejected") {
+                console.error(`[Mikroserwis] Błąd podczas skrapowania produktu "${batch[index]}":`, result.reason);
+            }
+        });
+    }
+    return allResults;
+}
