@@ -39,14 +39,14 @@ services:
     build:
       context: ./frontend/pricenest-frontend
       args:
-        - NEXT_PUBLIC_API_URL=http://localhost:5000
+        - NEXT_PUBLIC_API_URL=${PUBLIC_API_URL}
     container_name: pricenest-frontend
     restart: always
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://localhost:5000
+      - NEXT_PUBLIC_API_URL=${PUBLIC_API_URL}
     depends_on:
       - backend
     networks:
