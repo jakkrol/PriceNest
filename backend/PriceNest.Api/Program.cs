@@ -25,11 +25,13 @@ builder.Services.AddHttpClient<PriceNest.Api.Services.ScraperService>(client =>
     client.BaseAddress = new Uri(scraperUrl);
 });
 
+var frontendUrl = builder.Configuration["FRONTEND_URL"] ?? "http://localhost:3000";
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:3000").AllowCredentials()
+        builder.WithOrigins(frontendUrl).AllowCredentials()
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
