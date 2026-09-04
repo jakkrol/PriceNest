@@ -10,6 +10,15 @@ export const axiosLogin = async (username: string, password: string) => {
     }
 }
 
+export const axiosRegister = async (username: string, password: string, email: string) => {
+    try {
+        return await axiosInstance.post("/api/auth/register", { login: username, password: password, email: email });
+    } catch (error) {
+        console.error("Register error:", error);
+        throw error;
+    }
+}
+
 export const axiosGetProductsById = async (id: string) => {
     try {
         return await axiosInstance.get(`/api/product/${id}`);

@@ -1,0 +1,71 @@
+services:
+  db:
+    image: postgres:15
+    container_name: pricenest-db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: pricenest_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - pricenest-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d pricenest_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend/PriceNest.Api
+    container_name: pricenest-backend
+    restart: always
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - SCRAPER_URL=http://scraper:4000/
+      - ConnectionStrings__WebApiDatabase=Host=db;Port=5432;Database=pricenest_db;Username=admin;Password=admin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - pricenest-net
+
+  frontend:
+    build:
+      context: ./frontend/pricenest-frontend
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:5000
+    container_name: pricenest-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+    networks:
+      - pricenest-net
+
+  scraper:
+    build: ./scrapper/price-nest-scrapper
+    container_name: pricenest-scrapper
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - backend
+    networks:
+      - pricenest-net
+
+volumes:
+  pgdata:
+
+networks:
+  pricenest-net:
+    driver: bridge

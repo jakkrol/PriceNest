@@ -18,9 +18,11 @@ builder.Services.AddScoped<PriceNest.Api.Services.WatchListService>();
 builder.Services.AddScoped<PriceNest.Api.Services.AuthService>();
 builder.Services.AddScoped<PriceNest.Api.Services.UserService>();
 
+var scraperUrl = builder.Configuration["SCRAPER_URL"] ?? "http://localhost:4000/";
+
 builder.Services.AddHttpClient<PriceNest.Api.Services.ScraperService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:4000/");
+    client.BaseAddress = new Uri(scraperUrl);
 });
 
 builder.Services.AddCors(options =>
@@ -119,5 +121,20 @@ app.MapGet("/test", () =>
 //     product.LastUpdated = DateTime.Now;
 //     return Results.Created("Stworzono", product);
 // });
+using (var scope = app.Services.CreateScope())
+{
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        logger.LogInformation("Próbuję wykonać migracje bazy danych...");
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+        logger.LogInformation("Migracje wykonane pomyślnie!");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Wystąpił błąd podczas migracji bazy danych.");
+    }
+}
 
 app.Run();

@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation"; 
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { axiosGetProductsById } from "@/api/axios";
+import { useRouter } from "next/navigation";
+import { axiosRegister } from "@/api/axios";
 import { useEffect } from "react";
 
 export function LoginForm() {
@@ -12,11 +11,11 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  
-const { user, loading, login } = useAuth();
+
+  const { user, loading, login } = useAuth();
   const router = useRouter();
 
-useEffect(() => {
+  useEffect(() => {
 
     if (!loading && user) {
 
@@ -24,7 +23,7 @@ useEffect(() => {
     }
   }, [user, loading, router]);
 
-  const handleFormSubmit = async (e: React.FormEvent) => { 
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -33,7 +32,7 @@ useEffect(() => {
       await login(userLogin, password);
       console.log("Success");
       router.push("/dashboard");
-      
+
     } catch (error: any) {
       console.error("Error logging in:", error);
       setError("Błędny login lub hasło");
@@ -44,7 +43,7 @@ useEffect(() => {
 
   const handleGetProducts = async () => {
     try {
-      const res = await axiosGetProductsById("1");
+      const res = await axiosRegister("user", "123456", "test@example.com");
       console.log(res.data);
     } catch (error) {
       console.error("Error fetching data:", error);
