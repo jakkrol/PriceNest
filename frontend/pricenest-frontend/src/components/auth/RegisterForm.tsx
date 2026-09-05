@@ -1,3 +1,5 @@
+"use client"
+
 import { axiosRegister } from "@/api/axios";
 
 export function RegisterForm() {
