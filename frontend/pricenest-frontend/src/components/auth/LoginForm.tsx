@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { axiosRegister } from "@/api/axios";
 import { useEffect } from "react";
 
 export function LoginForm() {
@@ -41,18 +40,8 @@ export function LoginForm() {
     }
   };
 
-  const handleGetProducts = async () => {
-    try {
-      const res = await axiosRegister("user", "123456", "test@example.com");
-      console.log(res.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <button onClick={handleGetProducts} className="mt-4 p-2 bg-green-500 text-white rounded">Get Products</button>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-color">Sign in to your account</h2>
       </div>
