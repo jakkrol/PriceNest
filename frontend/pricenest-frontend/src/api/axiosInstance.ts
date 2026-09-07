@@ -1,7 +1,17 @@
 import axios from "axios";
 
+const getApiUrl = () => {
+    if (typeof window === 'undefined') return process.env.NEXT_PUBLIC_API_URL || "http://localhost:5295";
+
+    if (window.location.hostname.includes('jakkrol.pl')) {
+        return "https://api-ceny.jakkrol.pl";
+    }
+
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:5295";
+};
+
 const axiosInstance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5295",
+    baseURL: getApiUrl(),
     withCredentials: true,
     headers: {
         "Content-Type": "application/json",
