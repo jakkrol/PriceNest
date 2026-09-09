@@ -22,6 +22,10 @@ export function LoginForm() {
     }
   }, [user, loading, router]);
 
+  const moveToRegister = () => {
+    router.push("/register");
+  }
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -76,6 +80,9 @@ export function LoginForm() {
             </button>
           </div>
         </form>
+        <button onClick={moveToRegister} className="mt-5 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+          Register
+        </button>
       </div>
     </div>
   );
